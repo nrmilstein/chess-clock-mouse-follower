@@ -1,0 +1,33 @@
+.clock-mouse-follower {
+  position: absolute;
+  z-index: 1000;
+
+  padding: 0px 5px;
+  border-radius: 4px;
+  border: solid 1px #ccc;
+  opacity: 0.75;
+
+  background-color: white;
+  font-size: 26px;
+  font-family: "Noto Sans";
+  text-align: right;
+  user-select: none;
+  color: black;
+}
+
+.timeTop {
+  font-size: 23px;
+}
+
+.timeBottom {
+  font-size: 26px;
+}
+
+.timeOk {
+  font-weight: normal;
+}
+
+.timeCritical {
+  color: red;
+  font-weight: bold;
+}

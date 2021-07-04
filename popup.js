@@ -24,6 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   for (const timeControl of timeControls) {
     thresholdInput = document.getElementById(timeControl + 'Threshold');
     thresholdInput.value = activationThresholds[timeControl];
-    thresholdInput.addEventListener('input', debounce(handleThresholdChange, 500));
+    thresholdInput.addEventListener('input', debounce(handleThresholdChange, 300));
   }
 });

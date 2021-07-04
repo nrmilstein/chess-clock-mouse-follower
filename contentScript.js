@@ -29,11 +29,10 @@ const extractTime = clockNode => {
   }
 
   const gameType = document.querySelector(".setup > span").innerText.toLowerCase();
-  if (gameType === "correspondence") {
+  if (!["ultrabullet", "bullet", "blitz", "rapid", "classical"].includes(gameType)) {
     return;
   }
 
-  const isGameOver = false;
   const mouseFollower = new ClockMouseFollower();
 
   const clockObserverOptions = {
@@ -43,11 +42,14 @@ const extractTime = clockNode => {
   }
 
   const topObserver = onMutate(".rclock-top .time", clockObserverOptions, node => mouseFollower.setTimeTop(extractTime(node)));
-  const bottomObserver = onMutate(".rclock-bottom .time", clockObserverOptions, node => {
+  const bottomObserver = onMutate(".rclock-bottom .time", clockObserverOptions, async node => {
     const time = extractTime(node);
     mouseFollower.setTimeBottom(time);
-    if (time.toSeconds() < 500) {
+    const activationThreshold = (await Options.get('activationThresholds'))[gameType];
+    if (time.toSeconds() <= activationThreshold) {
       mouseFollower.mount();
+    } else {
+      mouseFollower.unmount();
     }
   });
 
@@ -55,7 +57,7 @@ const extractTime = clockNode => {
     if (node.querySelector(".rematch") !== null) {
       topObserver.disconnect();
       bottomObserver.disconnect();
-      mouseFollower.unmount();
+      mouseFollower.gameOver();
     }
   });
 })();

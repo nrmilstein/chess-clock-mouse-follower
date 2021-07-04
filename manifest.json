@@ -3,7 +3,7 @@
   "name": "Chess Clock Mouse Follower",
   "description": "Makes the chess clock follow your mouse during time scrambles.",
   "version": "1.0",
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -12,6 +12,8 @@
         "https://lichess.org/*"
       ],
       "js": [
+        "browser-polyfill.min.js",
+        "Options.js",
         "waitForMount.js",
         "Time.js",
         "onMutate.js",

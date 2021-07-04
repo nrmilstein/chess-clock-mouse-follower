@@ -10,6 +10,7 @@ class ClockMouseFollower {
 
     this.isMounted = false;
     this.hasMouseMoved = false;
+    this.isGameOver = false;
 
     this.handleMouseMove = this.handleMouseMove.bind(this);
   }
@@ -34,7 +35,7 @@ class ClockMouseFollower {
   }
 
   mount() {
-    if (!this.isMounted) {
+    if (!this.isMounted && !this.isGameOver) {
       this.isMounted = true;
       document.body.appendChild(this.el);
       window.addEventListener("mousemove", this.handleMouseMove);
@@ -48,6 +49,11 @@ class ClockMouseFollower {
       window.removeEventListener("mousemove", this.handleMouseMove);
       this.el.remove();
     }
+  }
+
+  gameOver() {
+    this.unmount();
+    this.isGameOver = true;
   }
 
   isVisible() {

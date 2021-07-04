@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="popup.css" />
+  <script src="browser-polyfill.min.js"></script>
+  <script src="Options.js"></script>
+  <script src="popup.js"></script>
+</head>
+
+<body>
+  <div class="thresholdDescription">Clock threshold at which to display overlay:</div>
+  <div class="thresholdSettings" id="thresholdSettings">
+    <table>
+      <tr>
+        <td class="timeControl">Ultrabullet: </td>
+        <td><input type="number" name="ultrabullet" id="ultrabulletThreshold" /> seconds</td>
+      </tr>
+      <tr>
+        <td class="timeControl">Bullet: </td>
+        <td><input type="number" name="bullet" id="bulletThreshold" /> seconds</td>
+      </tr>
+      <tr>
+        <td class="timeControl">Blitz: </td>
+        <td><input type="number" name="blitz" id="blitzThreshold" /> seconds</td>
+      </tr>
+      <tr>
+        <td class="timeControl">Rapid: </td>
+        <td><input type="number" name="rapid" id="rapidThreshold" /> seconds</td>
+      </tr>
+      <tr>
+        <td class="timeControl">Classical: </td>
+        <td><input type="number" name="classical" id="classicalThreshold" /> seconds</td>
+      </tr>
+    </table>
+  </div>
+</body>
+
+</html>

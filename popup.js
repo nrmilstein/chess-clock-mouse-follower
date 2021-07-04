@@ -1,3 +1,13 @@
+const debounce = (func, timeout) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const handleThresholdChange = async event => {
     const activationThresholds = await Options.get('activationThresholds');
@@ -14,6 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   for (const timeControl of timeControls) {
     thresholdInput = document.getElementById(timeControl + 'Threshold');
     thresholdInput.value = activationThresholds[timeControl];
-    thresholdInput.addEventListener('input', handleThresholdChange);
+    thresholdInput.addEventListener('input', debounce(handleThresholdChange, 500));
   }
 });

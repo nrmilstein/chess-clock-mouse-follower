@@ -17,7 +17,13 @@ const extractTime = clockNode => {
   return time;
 }
 
-(async () => {
+const stopExtension = (mouseFollower, topObserver, bottomObserver) => {
+  topObserver.disconnect();
+  bottomObserver.disconnect();
+  mouseFollower.gameOver();
+}
+
+const startExtension = async () => {
   const isGameUrl = /^\/([a-zA-Z0-9]{8}|[a-zA-Z0-9]{12})$/.test(window.location.pathname);
   if (!isGameUrl) {
     return;
@@ -41,10 +47,22 @@ const extractTime = clockNode => {
     subtree: false,
   }
 
-  const topObserver = onMutate(".rclock-top .time", clockObserverOptions, node => mouseFollower.setTimeTop(extractTime(node)));
+  const topObserver = onMutate(".rclock-top .time", clockObserverOptions, async node => {
+    if (!(await Options.get('isEnabled'))) {
+      stopExtension(mouseFollower, topObserver, bottomObserver);
+    }
+
+    mouseFollower.setTimeTop(extractTime(node));
+  });
+
   const bottomObserver = onMutate(".rclock-bottom .time", clockObserverOptions, async node => {
+    if (!(await Options.get('isEnabled'))) {
+      stopExtension(mouseFollower, topObserver, bottomObserver);
+    }
+
     const time = extractTime(node);
     mouseFollower.setTimeBottom(time);
+
     const activationThreshold = (await Options.get('activationThresholds'))[gameType];
     if (time.toSeconds() <= activationThreshold) {
       mouseFollower.mount();
@@ -55,9 +73,20 @@ const extractTime = clockNode => {
 
   onMutate(".rcontrols", { attributes: true, childList: true, subtree: false }, node => {
     if (node.querySelector(".rematch") !== null) {
-      topObserver.disconnect();
-      bottomObserver.disconnect();
-      mouseFollower.gameOver();
+      stopExtension(mouseFollower, topObserver, bottomObserver);
     }
   });
-})();
+};
+
+Options.get('isEnabled').then(isEnabled => {
+  if (isEnabled) {
+    startExtension();
+  }
+});
+
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.isEnabled) {
+    startExtension();
+  }
+});
+

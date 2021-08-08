@@ -60,7 +60,7 @@ class ClockMouseFollower {
     return this.isMounted && this.hasMouseMoved && this.times.top !== null && this.times.bottom !== null;
   }
 
-  render() {
+  async render() {
     if (this.isVisible()) {
       this.el.style.display = "block";
     } else {
@@ -68,8 +68,54 @@ class ClockMouseFollower {
       return;
     }
 
-    this.el.style.left = String(this.x + 18) + "px";
-    this.el.style.top = String(this.y - (this.el.offsetHeight / 2.0)) + "px";
+    const PADDING = {
+      top: 12,
+      right: 20,
+      bottom: 30,
+      left: 16,
+    }
+
+    const CORNER_REVERSE_PADDING = 3;
+
+    let xOffset, yOffset;
+
+    switch (await Options.get('position')) {
+      case "centerRight":
+        xOffset = PADDING.right;
+        yOffset = -this.el.offsetHeight / 2;
+        break;
+      case "bottomRight":
+        xOffset = PADDING.right - CORNER_REVERSE_PADDING;
+        yOffset = PADDING.bottom - CORNER_REVERSE_PADDING;
+        break;
+      case "bottomCenter":
+        xOffset = -this.el.offsetWidth / 2;
+        yOffset = PADDING.bottom;
+        break;
+      case "bottomLeft":
+        xOffset = -this.el.offsetWidth - PADDING.left + CORNER_REVERSE_PADDING;
+        yOffset = PADDING.bottom - CORNER_REVERSE_PADDING;
+        break;
+      case "centerLeft":
+        xOffset = -this.el.offsetWidth - PADDING.left;
+        yOffset = -this.el.offsetHeight / 2;
+        break;
+      case "topLeft":
+        xOffset = -this.el.offsetWidth - PADDING.left + CORNER_REVERSE_PADDING;
+        yOffset = -this.el.offsetHeight - PADDING.top - CORNER_REVERSE_PADDING;
+        break;
+      case "topCenter":
+        xOffset = -(this.el.offsetWidth / 2);
+        yOffset = -this.el.offsetHeight - PADDING.top;
+        break;
+      case "topRight":
+        xOffset = PADDING.right - CORNER_REVERSE_PADDING;
+        yOffset = -this.el.offsetHeight - PADDING.top + CORNER_REVERSE_PADDING;
+        break;
+    }
+
+    this.el.style.left = String(this.x + xOffset) + "px";
+    this.el.style.top = String(this.y + yOffset) + "px";
 
     const timeComparison = this.times.top.compare(this.times.bottom);
 

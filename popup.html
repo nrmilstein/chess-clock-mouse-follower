@@ -9,8 +9,11 @@
 </head>
 
 <body>
-  <div class="thresholdDescription">Clock threshold at which to display overlay:</div>
-  <div class="thresholdSettings" id="thresholdSettings">
+  <div class="header">
+    <h1 class="headerText">Chess clock mouse follower</h1><button id="isEnabled"></button>
+  </div>
+  <div class="description">Display threshold:</div>
+  <div class="thresholdOptions" id="thresholdOptions">
     <table>
       <tr>
         <td class="timeControl">Ultrabullet: </td>
@@ -33,6 +36,48 @@
         <td><input type="number" name="classical" id="classicalThreshold" /> seconds</td>
       </tr>
     </table>
+  </div>
+  <div class="description">Position:</div>
+  <div class="positionOptions">
+    <table class="positionOptionsTable">
+      <tr>
+        <td>
+          <input type="radio" name="position" value="topLeft" />
+        </td>
+        <td>
+          <input type="radio" name="position" value="topCenter" />
+        </td>
+        <td>
+          <input type="radio" name="position" value="topRight" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="radio" name="position" value="centerLeft" />
+        </td>
+        <td class="cursorCell">
+          <img src="cursor.svg" alt="cursor" />
+        </td>
+        <td>
+          <input type="radio" name="position" value="centerRight" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="radio" name="position" value="bottomLeft" />
+        </td>
+        <td>
+          <input type="radio" name="position" value="bottomCenter" />
+        </td>
+        <td>
+          <input type="radio" name="position" value="bottomRight" />
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="resetOptions">
+    <button id="resetOptions">Reset defaults</button>
+  </div>
   </div>
 </body>
 

@@ -1,5 +1,6 @@
 class Options {
   static defaultOptions = {
+    isEnabled: true,
     activationThresholds: {
       ultrabullet: 5,
       bullet: 10,
@@ -7,7 +8,7 @@ class Options {
       rapid: 30,
       classical: 40,
     },
-    location: 'centerRight',
+    position: 'centerRight',
   };
 
   static async get(key) {

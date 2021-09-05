@@ -1,26 +1,19 @@
 .clock-mouse-follower {
   position: absolute;
-  z-index: 1000;
+  z-index: 10000;
 
-  padding: 0px 5px;
+  padding: 0px 4px;
   border-radius: 4px;
   border: solid 1px #ccc;
   opacity: 0.75;
 
   background-color: white;
-  font-size: 26px;
-  font-family: "Noto Sans";
+  font-size: 23px;
+  line-height: 1.2;
+  font-family: "Arial";
   text-align: right;
   user-select: none;
   color: black;
-}
-
-.timeTop {
-  font-size: 26px;
-}
-
-.timeBottom {
-  font-size: 26px;
 }
 
 .timeOk {

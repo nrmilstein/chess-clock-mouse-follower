@@ -6,14 +6,19 @@
   "action": {
     "default_popup": "popup.html"
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [
-        "https://lichess.org/*"
+        "https://lichess.org/*",
+        "https://www.chess.com/*"
       ],
       "js": [
         "browser-polyfill.min.js",
         "Options.js",
+        "platforms.js",
         "waitForMount.js",
         "Time.js",
         "onMutate.js",
@@ -26,6 +31,7 @@
     }
   ],
   "permissions": [
+    "webNavigation",
     "storage",
     "tabs"
   ]

@@ -5,7 +5,7 @@ const isMounted = selector => {
 const waitForMount = async selectors => {
   let sleepTime = 100;
 
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 10; i++) {
     await sleep(sleepTime);
     Math.floor(sleepTime *= 1.5);
     if (selectors.every(selector => isMounted(selector))) {

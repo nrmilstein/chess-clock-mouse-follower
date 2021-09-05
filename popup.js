@@ -34,9 +34,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     Options.set({ isEnabled: newIsEnabled });
     syncEnabledButton();
 
-    const tabs = await browser.tabs.query({ url: "https://lichess.org/*" });
+    const tabs = await browser.tabs.query({ url: ["https://lichess.org/*", "https://www.chess.com/*"] });
     for (const tab of tabs) {
-      browser.tabs.sendMessage(tab.id, { isEnabled: newIsEnabled });
+      browser.tabs.sendMessage(tab.id, {
+        type: "isEnabledChange",
+        isEnabled: newIsEnabled
+      });
     }
   });
 

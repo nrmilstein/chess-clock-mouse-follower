@@ -1,45 +1,54 @@
-const extractTime = clockNode => {
-  const time = new Time();
+const platform = /lichess/.test(window.location.hostname)
+  ? platforms.lichess
+  : platforms.chessCom;
 
-  if (clockNode.classList.contains("hour")) {
-    time.hours = parseInt(clockNode.childNodes[0].wholeText);
-    time.mins = parseInt(clockNode.childNodes[2].wholeText);
-    time.secs = parseInt(clockNode.childNodes[4].wholeText);
-  } else {
-    time.mins = parseInt(clockNode.childNodes[0].wholeText);
-    time.secs = parseInt(clockNode.childNodes[2].wholeText);
-  }
+let isExtensionStarted = false;
+let mouseFollower, topObserver, bottomObserver, gameOverObserver = null;
 
-  const tenthsNode = clockNode.querySelector("tenths");
-  if (tenthsNode !== null) {
-    time.tenths = parseInt(tenthsNode.childNodes[1].wholeText);
+const stopExtension = () => {
+  if (mouseFollower) {
+    mouseFollower.gameOver();
   }
-  return time;
+  if (topObserver) {
+    topObserver.disconnect();
+  }
+  if (bottomObserver) {
+    bottomObserver.disconnect();
+  }
+  if (gameOverObserver) {
+    gameOverObserver.disconnect();
+  }
+  isExtensionStarted = false;
 }
 
-const stopExtension = (mouseFollower, topObserver, bottomObserver) => {
-  topObserver.disconnect();
-  bottomObserver.disconnect();
-  mouseFollower.gameOver();
+const shouldExtensionStart = async () => {
+  return !isExtensionStarted
+    && (await Options.get('isEnabled'))
+    && platform.gameUrlRegex.test(window.location.pathname);
+
 }
 
 const startExtension = async () => {
-  const isGameUrl = /^\/([a-zA-Z0-9]{8}|[a-zA-Z0-9]{12})$/.test(window.location.pathname);
-  if (!isGameUrl) {
+  if (!(await shouldExtensionStart())) {
     return;
   }
 
-  const didComponentsMount = await waitForMount([".rclock-bottom .time", ".rclock-top .time", ".setup > span", ".rcontrols"]);
+  const didComponentsMount = await waitForMount(platform.mountIndicators);
   if (!didComponentsMount) {
     return;
   }
 
-  const gameType = document.querySelector(".setup > span").innerText.toLowerCase();
-  if (!["ultrabullet", "bullet", "blitz", "rapid", "classical"].includes(gameType)) {
+  const timeControl = platform.getTimeControl();
+  if (!["ultrabullet", "bullet", "blitz", "rapid", "classical"].includes(timeControl)) {
     return;
   }
 
-  const mouseFollower = new ClockMouseFollower();
+  if (isExtensionStarted) {
+    return;
+  }
+  isExtensionStarted = true;
+
+  mouseFollower = new ClockMouseFollower();
 
   const clockObserverOptions = {
     attributes: true,
@@ -47,23 +56,15 @@ const startExtension = async () => {
     subtree: false,
   }
 
-  const topObserver = onMutate(".rclock-top .time", clockObserverOptions, async node => {
-    if (!(await Options.get('isEnabled'))) {
-      stopExtension(mouseFollower, topObserver, bottomObserver);
-    }
-
-    mouseFollower.setTimeTop(extractTime(node));
+  topObserver = onMutate(platform.topClock, clockObserverOptions, async node => {
+    mouseFollower.setTimeTop(platform.extractTime(node));
   });
 
-  const bottomObserver = onMutate(".rclock-bottom .time", clockObserverOptions, async node => {
-    if (!(await Options.get('isEnabled'))) {
-      stopExtension(mouseFollower, topObserver, bottomObserver);
-    }
-
-    const time = extractTime(node);
+  bottomObserver = onMutate(platform.bottomClock, clockObserverOptions, async node => {
+    const time = platform.extractTime(node);
     mouseFollower.setTimeBottom(time);
 
-    const activationThreshold = (await Options.get('activationThresholds'))[gameType];
+    const activationThreshold = (await Options.get('activationThresholds'))[timeControl];
     if (time.toSeconds() <= activationThreshold) {
       mouseFollower.mount();
     } else {
@@ -71,22 +72,27 @@ const startExtension = async () => {
     }
   });
 
-  onMutate(".rcontrols", { attributes: true, childList: true, subtree: false }, node => {
-    if (node.querySelector(".rematch") !== null) {
-      stopExtension(mouseFollower, topObserver, bottomObserver);
+  gameOverObserver = onMutate(platform.gameOverIndicatorContainer, { attributes: true, childList: true, subtree: false }, node => {
+    if (node.querySelector(platform.gameOverIndicator) !== null) {
+      stopExtension();
     }
   });
 };
 
-Options.get('isEnabled').then(isEnabled => {
-  if (isEnabled) {
-    startExtension();
+browser.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+  switch (request.type) {
+    case "isEnabledChange":
+      if (await Options.get('isEnabled')) {
+        startExtension();
+      } else {
+        stopExtension();
+      }
+      break;
+    case "historyStateUpdated":
+      stopExtension();
+      startExtension();
+      break;
   }
 });
 
-browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.isEnabled) {
-    startExtension();
-  }
-});
-
+startExtension();

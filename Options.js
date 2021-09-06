@@ -2,11 +2,11 @@ class Options {
   static defaultOptions = {
     isEnabled: true,
     activationThresholds: {
-      ultrabullet: 5,
-      bullet: 10,
-      blitz: 20,
-      rapid: 30,
-      classical: 40,
+      ultrabullet: 3,
+      bullet: 5,
+      blitz: 8,
+      rapid: 15,
+      classical: 20,
     },
     position: 'centerRight',
   };

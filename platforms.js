@@ -1,4 +1,4 @@
-const extractTimeLichess = clockNode => {
+const parseTimeLichess = clockNode => {
   const time = new Time();
 
   if (clockNode.classList.contains("hour")) {
@@ -17,11 +17,10 @@ const extractTimeLichess = clockNode => {
   return time;
 }
 
-const extractTimeChessCom = clockNode => {
+const parseTimeChessCom = clockNode => {
   const time = new Time();
 
-  const timeStr = clockNode.innerText;
-  const decimalSplit = timeStr.split('.');
+  const decimalSplit = clockNode.innerText.split('.');
 
   const integral = decimalSplit[0];
   const integralSplit = integral.split(':').reverse().map(e => parseInt(e))
@@ -40,19 +39,18 @@ const extractTimeChessCom = clockNode => {
   return time;
 }
 
-const getTimeControlLichess = () => {
+const parseTimeControlLichess = () => {
   return document.querySelector(".setup > span").innerText.toLowerCase();
 }
 
-const getTimeControlChessCom = () => {
+const parseTimeControlChessCom = () => {
   options = ["ultrabullet", "bullet", "blitz", "rapid", "classical"];
   classes = document.querySelector('a[data-tab="game"] > span').classList;
-  for (option of options) {
-    if (classes.contains(option)) {
-      return option;
-    }
+  timeControl = options.find(option => classes.contains(option));
+  if (!timeControl) {
+    return null;
   }
-  return null;
+  return timeControl;
 }
 
 const platforms = {
@@ -68,8 +66,8 @@ const platforms = {
     bottomClock: ".rclock-bottom .time",
     gameOverIndicatorContainer: ".rcontrols",
     gameOverIndicator: ".rematch",
-    extractTime: extractTimeLichess,
-    getTimeControl: getTimeControlLichess,
+    parseTime: parseTimeLichess,
+    parseTimeControl: parseTimeControlLichess,
   },
   chessCom: {
     gameUrlRegex: /^\/game\/live\/\d+$/,
@@ -83,7 +81,7 @@ const platforms = {
     bottomClock: ".clock-bottom > span",
     gameOverIndicatorContainer: ".live-game-buttons-component",
     gameOverIndicator: ".live-game-buttons-game-over",
-    extractTime: extractTimeChessCom,
-    getTimeControl: getTimeControlChessCom,
+    parseTime: parseTimeChessCom,
+    parseTimeControl: parseTimeControlChessCom,
   }
 }

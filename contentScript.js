@@ -33,12 +33,11 @@ const startExtension = async () => {
     return;
   }
 
-  const didComponentsMount = await waitForMount(platform.mountIndicators);
-  if (!didComponentsMount) {
+  if (!(await waitForMount(platform.mountIndicators))) {
     return;
   }
 
-  const timeControl = platform.getTimeControl();
+  const timeControl = platform.parseTimeControl();
   if (!["ultrabullet", "bullet", "blitz", "rapid", "classical"].includes(timeControl)) {
     return;
   }
@@ -50,18 +49,18 @@ const startExtension = async () => {
 
   mouseFollower = new ClockMouseFollower();
 
-  const clockObserverOptions = {
+  const observerOptions = {
     attributes: true,
     childList: true,
     subtree: false,
   }
 
-  topObserver = onMutate(platform.topClock, clockObserverOptions, async node => {
-    mouseFollower.setTimeTop(platform.extractTime(node));
+  topObserver = onMutate(platform.topClock, observerOptions, async node => {
+    mouseFollower.setTimeTop(platform.parseTime(node));
   });
 
-  bottomObserver = onMutate(platform.bottomClock, clockObserverOptions, async node => {
-    const time = platform.extractTime(node);
+  bottomObserver = onMutate(platform.bottomClock, observerOptions, async node => {
+    const time = platform.parseTime(node);
     mouseFollower.setTimeBottom(time);
 
     const activationThreshold = (await Options.get('activationThresholds'))[timeControl];
@@ -72,7 +71,7 @@ const startExtension = async () => {
     }
   });
 
-  gameOverObserver = onMutate(platform.gameOverIndicatorContainer, { attributes: true, childList: true, subtree: false }, node => {
+  gameOverObserver = onMutate(platform.gameOverIndicatorContainer, observerOptions, node => {
     if (node.querySelector(platform.gameOverIndicator) !== null) {
       stopExtension();
     }

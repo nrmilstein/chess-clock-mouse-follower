@@ -28,7 +28,7 @@ const syncOptions = async () => {
   document.querySelector(`[value=${await Options.get('position')}]`).checked = true;
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+const initEventHandlers = () => {
   document.getElementById('isEnabled').addEventListener('click', async event => {
     const newIsEnabled = !(await Options.get('isEnabled'));
     Options.set({ isEnabled: newIsEnabled });
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     thresholdInput.addEventListener('input', debounce(handleThresholdChange, 300));
   }
 
-
   const positionRadioInputs = document.querySelectorAll('[name=position]');
   for (const positionRadioInput of positionRadioInputs) {
     positionRadioInput.addEventListener("change", async event => {
@@ -70,6 +69,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     Options.set(Options.defaultOptions);
     syncOptions();
   });
+}
 
+document.addEventListener('DOMContentLoaded', async () => {
+  initEventHandlers();
   syncOptions();
 });

@@ -14,10 +14,10 @@ class Time {
     return [this.hours, this.mins, this.secs];
   }
 
-  format(hasTenths = false) {
+  format(withTenths = false) {
     const integralDigits = this.removePrefixZeroes(this.getIntegralDigits().filter(i => i !== null));
     const integralTimeStr = integralDigits.map((digit, i) => i > 0 ? this.formatDigit(digit) : String(digit)).join(":");
-    const fractionalTimeStr = hasTenths ? `.${this.tenths ?? "0"}` : "";
+    const fractionalTimeStr = withTenths ? `.${this.tenths ?? "0"}` : "";
     return integralTimeStr + fractionalTimeStr;
   }
 

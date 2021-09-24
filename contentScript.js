@@ -3,7 +3,7 @@ const platform = /lichess/.test(window.location.hostname)
   : platforms.chessCom;
 
 let isExtensionStarted = false;
-let mouseFollower, topObserver, bottomObserver, gameOverObserver = null;
+let mouseFollower = null, topObserver = null, bottomObserver = null, gameOverObserver = null;
 
 const stopExtension = () => {
   if (mouseFollower) {

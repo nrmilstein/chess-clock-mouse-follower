@@ -1,6 +1,8 @@
+const gameUrlRegex = /^\/game\/live\/\d+$/;
+
 chrome.webNavigation.onHistoryStateUpdated.addListener(async event => {
   const url = new URL(event.url);
-  if (url.hostname !== "www.chess.com" || !platforms.chessCom.gameUrlRegex.test(url.pathname)) {
+  if (url.hostname !== "www.chess.com" || !gameUrlRegex.test(url.pathname)) {
     return;
   }
 

@@ -11,9 +11,18 @@ const debounce = (func, timeout) => {
 const timeControls = ['ultrabullet', 'bullet', 'blitz', 'rapid', 'classical'];
 
 const syncEnabledButton = async () => {
-  document.getElementById("isEnabled").innerText = (await Options.get('isEnabled'))
-    ? "Disable"
-    : "Enable";
+  const isEnabled = await Options.get('isEnabled');
+  const button = document.getElementById("isEnabled");
+  button.innerText = isEnabled
+    ? "Enabled"
+    : "Disabled";
+  if (isEnabled) {
+    button.classList.remove("buttonDisabled");
+    button.classList.add("buttonEnabled");
+  } else {
+    button.classList.remove("buttonEnabled");
+    button.classList.add("buttonDisabled");
+  }
 }
 
 const syncOptions = async () => {

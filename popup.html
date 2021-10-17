@@ -10,30 +10,34 @@
 
 <body>
   <div class="header">
-    <h1 class="headerText">Chess clock mouse follower</h1><button class="button" id="isEnabled"></button>
+    <h1 class="headerText">Chess clock mouse follower</h1>
+    <label class="switch">
+      <input type="checkbox" id="isEnabled">
+      <span class="slider"></span>
+    </label>
   </div>
   <div class="description">Activation threshold:</div>
   <div class="thresholdOptions" id="thresholdOptions">
     <table>
       <tr>
         <td class="timeControl">Ultrabullet: </td>
-        <td><input type="number" name="ultrabullet" id="ultrabulletThreshold" /> seconds</td>
+        <td><input type="number" name="ultrabullet" min="1" id="ultrabulletThreshold" /> seconds</td>
       </tr>
       <tr>
         <td class="timeControl">Bullet: </td>
-        <td><input type="number" name="bullet" id="bulletThreshold" /> seconds</td>
+        <td><input type="number" name="bullet" min="1" id="bulletThreshold" /> seconds</td>
       </tr>
       <tr>
         <td class="timeControl">Blitz: </td>
-        <td><input type="number" name="blitz" id="blitzThreshold" /> seconds</td>
+        <td><input type="number" name="blitz" min="1" id="blitzThreshold" /> seconds</td>
       </tr>
       <tr>
         <td class="timeControl">Rapid: </td>
-        <td><input type="number" name="rapid" id="rapidThreshold" /> seconds</td>
+        <td><input type="number" name="rapid" min="1" id="rapidThreshold" /> seconds</td>
       </tr>
       <tr>
         <td class="timeControl">Classical: </td>
-        <td><input type="number" name="classical" id="classicalThreshold" /> seconds</td>
+        <td><input type="number" name="classical" min="1" id="classicalThreshold" /> seconds</td>
       </tr>
     </table>
   </div>

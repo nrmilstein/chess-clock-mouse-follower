@@ -10,27 +10,12 @@ const debounce = (func, timeout) => {
 
 const timeControls = ['ultrabullet', 'bullet', 'blitz', 'rapid', 'classical'];
 
-const syncEnabledButton = async () => {
-  const isEnabled = await Options.get('isEnabled');
-  const button = document.getElementById("isEnabled");
-  button.innerText = isEnabled
-    ? "Enabled"
-    : "Disabled";
-  if (isEnabled) {
-    button.classList.remove("buttonDisabled");
-    button.classList.add("buttonEnabled");
-  } else {
-    button.classList.remove("buttonEnabled");
-    button.classList.add("buttonDisabled");
-  }
-}
-
 const syncOptions = async () => {
-  syncEnabledButton();
+  document.getElementById('isEnabled').checked = (await Options.get('isEnabled'));
 
   const activationThresholds = await Options.get('activationThresholds');
   for (const timeControl of timeControls) {
-    thresholdInput = document.getElementById(timeControl + 'Threshold');
+    const thresholdInput = document.getElementById(timeControl + 'Threshold');
     thresholdInput.value = activationThresholds[timeControl];
   }
 
@@ -38,10 +23,9 @@ const syncOptions = async () => {
 }
 
 const initEventHandlers = () => {
-  document.getElementById('isEnabled').addEventListener('click', async event => {
-    const newIsEnabled = !(await Options.get('isEnabled'));
+  document.getElementById('isEnabled').addEventListener('change', async event => {
+    const newIsEnabled = event.target.checked;
     Options.set({ isEnabled: newIsEnabled });
-    syncEnabledButton();
 
     const tabs = await browser.tabs.query({ url: ["https://lichess.org/*", "https://www.chess.com/*"] });
     for (const tab of tabs) {
@@ -63,7 +47,7 @@ const initEventHandlers = () => {
   };
 
   for (const timeControl of timeControls) {
-    thresholdInput = document.getElementById(timeControl + 'Threshold');
+    const thresholdInput = document.getElementById(timeControl + 'Threshold');
     thresholdInput.addEventListener('input', debounce(handleThresholdChange, 300));
   }
 
